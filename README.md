@@ -2,6 +2,10 @@
 
 Step-by-step guide how to install Jenkins in the Kubernetes cluster and run Jenkins agents inside that cluster.
 
+For minikube install ingress controller with following command:
+
+`minikube addons enable ingress`
+
 ## Create Kubernetes namespace
 
 `kubectl create namespace jenkins`
@@ -13,6 +17,14 @@ Step-by-step guide how to install Jenkins in the Kubernetes cluster and run Jenk
 ## Apply Jenkins deployment configuration
 
 `kubectl apply -f config/jenkins/jenkins.yaml`
+
+## Apply Jenkins ingress configuration
+
+`kubectl apply -f jenkins-ingress.yaml`
+
+## Get minikube ip address and add jenkins.example.com to /etc/hosts file
+
+`echo "$(minikube ip) jenkins.example.com" >> /etc/hosts`
 
 ## Log into Jenkins and create new user/or update password for 'admin'
 
@@ -42,3 +54,41 @@ It should combined from following info: `http://<service-name>.<namespace>.svc.c
 5. Under 'Containers' press 'Add Container' button and select 'Container Template'. Fill 'Name' - 'jnlp' and 'Docker image' - 'jenkins/inbound-agent:latest'. Remove values from 'Command to run' and 'Arguments to pass to the command' fields.
 
 Now Jenkins will build jobs that have label 'kubeagent' inside container.
+
+## Apply prometheus and grafana configs in the next order
+
+*Prometheus:*
+
+clusterRole.yaml
+
+config-map.yaml
+
+prometheus-deployment.yaml
+
+prometheus-service.yaml
+
+prometheus-ingress.yaml
+
+*Grafana:*
+
+grafana-datasource-config.yaml
+
+grafana-deployment.yaml
+
+grafana-service.yaml
+
+grafana-ingress.yaml
+
+## Add ingress addresses to /etc/hosts
+
+`echo "$(minikube ip) prometheus.example.com" >> /etc/hosts`
+
+`echo "$(minikube ip) grafana.example.com" >> /etc/hosts`
+
+## Verify Services
+
+<http://jenkins.example.com>
+
+<http://prometheus.example.com>
+
+<http://grafana.example.com>
