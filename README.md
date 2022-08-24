@@ -4,6 +4,8 @@ Step-by-step guide how to install Jenkins in the Kubernetes cluster and run Jenk
 
 For minikube install ingress controller with following command:
 
+`minikube start -n 2`
+
 `minikube addons enable ingress`
 
 ## Create Kubernetes namespace
